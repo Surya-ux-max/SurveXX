@@ -1,5 +1,8 @@
 # SURVEX - Built for Boss 'Suryaprakash S'
 Backend file initialised with the simple starting data
+# TO Start backend 
+uv add -r requirements.txt or main users switch to virtual environment
+uvicorn main:app --reload
 
 # SURVEX JARVIS - Development Log
 

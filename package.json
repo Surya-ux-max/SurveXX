@@ -1,0 +1,9 @@
+{
+  "name": "survex-root",
+  "private": true,
+  "scripts": {
+    "face-dev": "npm run dev --prefix face",
+    "backend-dev": "cd backend && uvicorn main:app --reload",
+    "dev": "npm run face-dev"
+  }
+}
