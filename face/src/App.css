@@ -17,6 +17,42 @@
 .delay-75 { animation-delay: 75ms; }
 .delay-150 { animation-delay: 150ms; }
 
+@keyframes hudSweep {
+  0% {
+    transform: translateX(-160%) skewX(-18deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.35;
+  }
+  100% {
+    transform: translateX(220%) skewX(-18deg);
+    opacity: 0;
+  }
+}
+
+@keyframes hudPulse {
+  0%, 100% {
+    opacity: 0.45;
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.12);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 22px rgba(34, 211, 238, 0.28);
+  }
+}
+
+.animate-hud-sweep {
+  animation: hudSweep 4.8s linear infinite;
+}
+
+.animate-hud-pulse {
+  animation: hudPulse 2.4s ease-in-out infinite;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

@@ -1,14 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Bot, Send, LogOut, User, Sparkles, Cpu, Activity, Shield, Terminal as TerminalIcon, Zap } from 'lucide-react';
+import { Bot, Send, LogOut, User, Cpu, Terminal as TerminalIcon, Menu, X } from 'lucide-react';
+import LetterGlitch from '../components/LetterGlitch';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
   const [messages, setMessages] = useState([
-    { role: 'assistant', content: "Survex neural interface online. Greetings, Suryaprakash. All systems are operational. How can I assist you today?" }
+    { role: 'assistant', content: 'SurveX online. Ask anything.' }
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -33,19 +35,31 @@ const Dashboard = () => {
       const data = await response.json();
       setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
     } catch (error) {
-      setMessages(prev => [...prev, { role: 'assistant', content: "SYSTEM_ERROR: Uplink to core failed. Ensure neural bridge is active." }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: "SYSTEM_ERROR: Connection failed. Please try again." }]);
     } finally {
       setIsTyping(false);
     }
   };
 
   return (
-    <div className="flex h-screen bg-[#020202] text-cyan-400 font-mono overflow-hidden">
-      {/* HUD Scanline Effect */}
-      <div className="fixed inset-0 z-50 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,255,255,0.02)_50%),linear-gradient(90deg,rgba(255,0,0,0.01),rgba(0,255,0,0.01),rgba(0,0,255,0.01))] bg-[length:100%_4px,3px_100%] opacity-30" />
+    <div className="relative flex h-screen overflow-hidden bg-[#020202] font-mono text-cyan-400 isolate">
+      <div className="fixed inset-0 opacity-70">
+        <LetterGlitch
+          glitchSpeed={50}
+          smooth
+          colors={['#12332b', '#37d6b4', '#5db8ff']}
+          showCenterVignette
+          showOuterVignette={false}
+        />
+      </div>
+      <div className="fixed inset-0 bg-[radial-gradient(circle_at_center,rgba(8,145,178,0.3)_0%,rgba(2,6,12,0.58)_34%,#020202_100%)]" />
+      <div className="fixed inset-0 bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.16),transparent_42%),radial-gradient(circle_at_bottom_right,rgba(6,182,212,0.18),transparent_34%)]" />
 
-      {/* Sidebar - Advanced HUD Panel */}
-      <div className="w-80 bg-black/40 border-r border-cyan-900/50 flex flex-col p-6 backdrop-blur-xl relative z-10">
+      {/* HUD Scanline Effect */}
+      <div className="fixed inset-0 z-10 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,255,255,0.02)_50%),linear-gradient(90deg,rgba(255,0,0,0.01),rgba(0,255,0,0.01),rgba(0,0,255,0.01))] bg-[length:100%_4px,3px_100%] opacity-45" />
+
+      {/* Sidebar */}
+      <div className={`relative z-20 shrink-0 overflow-hidden border-cyan-900/50 bg-black/60 backdrop-blur-xl transition-all duration-300 ${sidebarOpen ? 'w-80 border-r p-6' : 'w-0 border-r-0 p-0'}`}>
         <div className="flex items-center gap-4 mb-12">
           <div className="relative">
             <div className="absolute inset-0 bg-cyan-500 blur-md opacity-20 animate-pulse" />
@@ -55,29 +69,16 @@ const Dashboard = () => {
           </div>
           <div>
             <h1 className="text-xl font-black tracking-widest text-white uppercase italic">SURVE<span className="text-cyan-500">X</span></h1>
-            <p className="text-[8px] tracking-[0.3em] text-cyan-500/50 uppercase">Neural Core OS v4.0</p>
+            <p className="text-[8px] tracking-[0.3em] text-cyan-500/50 uppercase">System Active</p>
           </div>
         </div>
 
         <div className="flex-1 space-y-6">
-          <div className="space-y-2">
-            <p className="text-[10px] tracking-[0.2em] font-bold text-cyan-500/30 uppercase mb-4">Core Systems</p>
-            <button className="w-full flex items-center gap-4 px-4 py-3 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 rounded-lg font-bold text-xs transition-all shadow-[0_0_10px_rgba(6,182,212,0.1)]">
-              <TerminalIcon className="w-4 h-4" /> NEURAL_BRIDGE
-            </button>
-            <button className="w-full flex items-center gap-4 px-4 py-3 hover:bg-cyan-500/5 text-cyan-500/50 rounded-lg font-bold text-xs transition-all">
-              <Shield className="w-4 h-4" /> DEFENSE_GRID
-            </button>
-            <button className="w-full flex items-center gap-4 px-4 py-3 hover:bg-cyan-500/5 text-cyan-500/50 rounded-lg font-bold text-xs transition-all">
-              <Zap className="w-4 h-4" /> POWER_CORE
-            </button>
-          </div>
-
-          <div className="p-4 border border-cyan-900/50 rounded-xl bg-cyan-950/10 space-y-4">
-            <p className="text-[10px] tracking-[0.2em] font-bold text-cyan-500/30 uppercase">Biometrics</p>
+          <div className="space-y-4 rounded-xl border border-cyan-900/50 bg-slate-950/85 p-4 shadow-[0_0_18px_rgba(8,145,178,0.12)]">
+            <p className="text-[10px] tracking-[0.2em] font-bold text-cyan-500/30 uppercase">Status</p>
             <div className="flex items-center justify-between">
-              <span className="text-[10px] text-cyan-500/70 uppercase">Uptime</span>
-              <span className="text-[10px] text-white">99.98%</span>
+              <span className="text-[10px] text-cyan-500/70 uppercase">Ready</span>
+              <span className="text-[10px] text-white">Online</span>
             </div>
             <div className="h-1 bg-cyan-900/30 rounded-full overflow-hidden">
               <div className="h-full bg-cyan-500 w-[99%] animate-pulse" />
@@ -86,65 +87,64 @@ const Dashboard = () => {
         </div>
 
         <div className="pt-6 border-t border-cyan-900/50">
-          <div className="flex items-center gap-4 p-4 bg-cyan-500/5 border border-cyan-500/20 rounded-2xl mb-4">
+          <div className="mb-4 flex items-center gap-4 rounded-2xl border border-cyan-500/20 bg-slate-950/90 p-4">
             <div className="w-10 h-10 bg-black border border-cyan-500/30 rounded-full flex items-center justify-center text-cyan-400">
               <User className="w-5 h-5" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[10px] font-bold text-white truncate uppercase tracking-widest">{user?.username}</p>
-              <p className="text-[8px] text-cyan-500/50 uppercase tracking-tighter italic">Authorized Creator</p>
+              <p className="text-[8px] text-cyan-500/50 uppercase tracking-tighter italic">Active User</p>
             </div>
           </div>
           <button
             onClick={logout}
             className="w-full flex items-center justify-center gap-2 px-4 py-2 text-red-500/50 hover:text-red-500 transition-colors text-[10px] font-bold uppercase tracking-widest"
           >
-            <LogOut className="w-3 h-3" /> Terminate Session
+            <LogOut className="w-3 h-3" /> Sign Out
           </button>
         </div>
       </div>
 
       {/* Main Command Center */}
-      <div className="flex-1 flex flex-col relative z-10">
+      <div className="relative z-20 flex min-w-0 flex-1 flex-col">
         {/* Header HUD Bar */}
-        <div className="px-10 py-6 border-b border-cyan-900/50 bg-black/20 backdrop-blur-md flex items-center justify-between">
+        <div className="flex items-center justify-between border-b border-cyan-900/50 bg-black/60 px-10 py-6 backdrop-blur-md">
           <div className="flex items-center gap-4">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="flex h-10 w-10 items-center justify-center rounded-lg border border-cyan-500/20 bg-black/50 text-cyan-400 transition-all hover:bg-cyan-500/10 hover:text-cyan-300"
+            >
+              {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
             <div className="w-2 h-2 bg-cyan-500 rounded-full animate-ping" />
-            <h2 className="font-black text-sm text-white uppercase tracking-[0.3em]">AI_BRIDGE_ESTABLISHED</h2>
+            <h2 className="font-black text-sm text-white uppercase tracking-[0.3em]">SURVE<span className="text-cyan-500">X</span></h2>
           </div>
-          <div className="flex gap-8 text-[10px] font-bold tracking-[0.2em] text-cyan-500/40 uppercase">
-            <span className="flex items-center gap-2"><Activity className="w-3 h-3" /> SYNC: 100%</span>
-            <span className="flex items-center gap-2 text-cyan-400 animate-pulse"><Sparkles className="w-3 h-3" /> SURVEX: LISTENING</span>
+          <div className="text-[10px] font-bold tracking-[0.2em] text-cyan-500/40 uppercase">
+            <span className="text-cyan-400">Online</span>
           </div>
         </div>
 
         {/* Neural Log (Messages) */}
-        <div className="flex-1 overflow-y-auto p-10 space-y-8 scrollbar-hide">
+        <div className="relative flex-1 overflow-y-auto p-10 space-y-8 scrollbar-hide">
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div className={`flex gap-6 max-w-[70%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                 <div className={`w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center border transition-all ${
                   msg.role === 'user' 
-                    ? 'bg-black border-cyan-500/30 text-cyan-500' 
-                    : 'bg-cyan-600/10 border-cyan-400 text-white shadow-[0_0_15px_rgba(6,182,212,0.2)]'
+                    ? 'bg-slate-950/95 border-cyan-500/30 text-cyan-300 shadow-[0_0_15px_rgba(6,182,212,0.12)]' 
+                    : 'bg-slate-950/95 border-cyan-400/60 text-white shadow-[0_0_15px_rgba(6,182,212,0.2)]'
                 }`}>
                   {msg.role === 'user' ? <User className="w-6 h-6" /> : <Bot className="w-6 h-6" />}
                 </div>
                 <div className={`relative p-6 rounded-2xl border ${
                   msg.role === 'user' 
-                    ? 'bg-black/40 border-cyan-900/50 text-cyan-100 rounded-tr-none' 
-                    : 'bg-cyan-950/20 border-cyan-500/30 text-white rounded-tl-none shadow-inner'
+                    ? 'bg-slate-950/92 border-cyan-700/50 text-cyan-50 rounded-tr-none backdrop-blur-md shadow-[0_14px_30px_rgba(2,6,23,0.42)]' 
+                    : 'bg-slate-950/88 border-cyan-400/35 text-white rounded-tl-none backdrop-blur-md shadow-[0_14px_30px_rgba(8,145,178,0.1)]'
                 }`}>
-                  {/* Hexagon Pattern Overlay for AI Messages */}
                   {msg.role === 'assistant' && (
-                    <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
+                    <div className="pointer-events-none absolute inset-0 rounded-2xl rounded-tl-none bg-[linear-gradient(135deg,rgba(34,211,238,0.08),transparent_55%)]" />
                   )}
                   <p className="text-sm leading-relaxed tracking-wide relative z-10">{msg.content}</p>
-                  <div className={`absolute bottom-[-20px] text-[8px] font-bold tracking-widest uppercase opacity-30 ${
-                    msg.role === 'user' ? 'right-0' : 'left-0'
-                  }`}>
-                    {msg.role === 'user' ? 'TRANSMISSION_ID: TX-774' : 'SYNTHESIS_ID: RX-991'}
-                  </div>
                 </div>
               </div>
             </div>
@@ -152,10 +152,10 @@ const Dashboard = () => {
           {isTyping && (
             <div className="flex justify-start">
               <div className="flex gap-6 max-w-[70%] flex-row">
-                <div className="w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center bg-cyan-600/10 border border-cyan-400 text-white shadow-[0_0_15px_rgba(6,182,212,0.2)] animate-pulse">
+                <div className="flex h-12 w-12 flex-shrink-0 animate-pulse items-center justify-center rounded-xl border border-cyan-400/60 bg-slate-950/95 text-white shadow-[0_0_15px_rgba(6,182,212,0.2)]">
                   <Bot className="w-6 h-6" />
                 </div>
-                <div className="p-6 rounded-2xl bg-cyan-950/20 border border-cyan-500/30 rounded-tl-none flex items-center gap-2">
+                <div className="flex items-center gap-2 rounded-2xl rounded-tl-none border border-cyan-400/35 bg-slate-950/88 p-6 backdrop-blur-md">
                   <div className="w-1.5 h-1.5 bg-cyan-500 rounded-full animate-bounce"></div>
                   <div className="w-1.5 h-1.5 bg-cyan-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
                   <div className="w-1.5 h-1.5 bg-cyan-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
@@ -169,15 +169,15 @@ const Dashboard = () => {
         {/* Input Terminal */}
         <div className="p-10 pt-0">
           <form onSubmit={handleSend} className="relative group">
-            <div className="absolute inset-0 bg-cyan-500 blur-xl opacity-5 group-focus-within:opacity-20 transition-opacity" />
-            <div className="relative flex items-center gap-4 bg-black/60 border border-cyan-500/30 rounded-2xl p-2 focus-within:border-cyan-400 transition-all shadow-2xl shadow-cyan-950/50">
+            <div className="absolute inset-0 bg-cyan-500 blur-xl opacity-10 transition-opacity group-focus-within:opacity-20" />
+            <div className="relative flex items-center gap-4 rounded-2xl border border-cyan-400/35 bg-slate-950/92 p-2 backdrop-blur-xl transition-all shadow-2xl shadow-cyan-950/50 focus-within:border-cyan-300">
               <div className="pl-4 text-cyan-500/50"><TerminalIcon className="w-5 h-5" /></div>
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="INPUT COMMAND OR QUERY..."
-                className="flex-1 bg-transparent py-4 text-sm text-white placeholder-cyan-900 outline-none uppercase tracking-widest font-black"
+                placeholder="Ask SurveX..."
+                className="flex-1 bg-transparent py-4 text-sm font-black uppercase tracking-widest text-white outline-none placeholder:text-cyan-200/35"
               />
               <button
                 type="submit"
@@ -190,11 +190,11 @@ const Dashboard = () => {
           </form>
           <div className="mt-6 flex justify-between items-center px-4">
             <div className="flex gap-4">
-              <span className="text-[8px] tracking-[0.2em] text-cyan-500/30 uppercase font-black">ENC_MODE: RSA_4096</span>
-              <span className="text-[8px] tracking-[0.2em] text-cyan-500/30 uppercase font-black">LATENCY: 14MS</span>
+              <span className="text-[8px] tracking-[0.2em] text-cyan-500/30 uppercase font-black">Secure</span>
+              <span className="text-[8px] tracking-[0.2em] text-cyan-500/30 uppercase font-black">14ms</span>
             </div>
             <p className="text-[8px] tracking-[0.2em] text-cyan-900 uppercase font-black">
-              Property of Suryaprakash Neural Systems
+              SurveX
             </p>
           </div>
         </div>
